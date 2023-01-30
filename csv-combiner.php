@@ -1,15 +1,30 @@
 <?php
-if (isset($argc)) {
-	for ($i = 1; $i < $argc; $i++) {
-        if (file_exists($argv[$i])) {
-            addToCSV($argv[$i]);
-        }
-	}
+// Euan Canoy
+// 1/30/2023
 
+// csv-combiner takes in csv files through the command line then combines and outputs
+// the combination to STDOUT
+
+if (isset($argc)) {
+    $columnNames = array();
+    $curFileColNames = array();
+    for ($i = 1; $i < $argc; $i++) {
+         if (file_exists($argv[$i])) {
+            $curArray = getColumnNames($argv[$i]);
+            if ($curArray != null) {
+                $curFileColNames[$argv[$i]] = $curArray;
+                $columnNames = array_unique(array_merge($curArray, $columnNames));
+            }
+         }
+     }
+    //  print_r (array_flip($columnNames));
+    array_push($columnNames, 'filename');
+    print_r($columnNames);
+    print_r($curFileColNames);
+    // fputcsv(STDOUT, $columnNames);
     // for ($i = 1; $i < $argc; $i++) {
-   //     $columnNames;
     //     if (file_exists($argv[$i])) {
-    //         $columnNames = array_unique(getColumnNames($argv[$i]), $columnNames);
+    //         addToCSV($argv[$i], $columnNames, curFileColNames);
     //     }
 	// }
 }
@@ -17,15 +32,13 @@ else {
 	echo "argc and argv disabled\n";
 } 
 
-function addToCSV($filePath) {
+function addToCSV($filePath, $columnNames) {
     $parts = explode("/", $filePath);
     $fileName = array_pop($parts);
     $file = fopen($filePath, "r");
     // check regex instead of parts?
     if( ($data = fgetcsv($file) ) !== FALSE && !($empty = empty($data) || (count($data) === 1 && empty($data[0])))) {
-        print_r(count($data));
-        array_push($data, "filename");
-        fputcsv(STDOUT, $data);
+  
     }
     while((($content = fgetcsv($file) ) !== FALSE)) {   
         // print_r(gettype($content) . "\n");
@@ -37,12 +50,14 @@ function addToCSV($filePath) {
 
 }
 
-// function getColumnNames($filePath) {
-//     if( ($data = fgetcsv($file) ) !== FALSE && !($empty = empty($data) || (count($data) === 1 && empty($data[0])))) {
-//         print_r(count($data));
-//         array_push($data, "filename");
-      
-// }
+function getColumnNames($filePath) {
+    $file = fopen($filePath, "r");
+    if( ($data = fgetcsv($file) ) !== FALSE && !($empty = empty($data) || (count($data) === 1 && empty($data[0])))) {
+        return $data;
+    }
+    fclose($file);
+    return null;
+}
 
 /*
 
