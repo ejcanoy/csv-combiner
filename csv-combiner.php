@@ -1,40 +1,49 @@
 <?php
 if (isset($argc)) {
 	for ($i = 1; $i < $argc; $i++) {
+        $columnNames;
         if (file_exists($argv[$i])) {
-            addToCSV($argv[$i]);
-
-
+            $columnNames = array_unique(getColumnNames($argv[$i]), $columnNames);
         }
 	}
+
+    // for ($i = 1; $i < $argc; $i++) {
+    //     $columnNames;
+    //     if (file_exists($argv[$i])) {
+    //         $columnNames = getColumnNames()
+    //     }
+	// }
 }
 else {
 	echo "argc and argv disabled\n";
 } 
 
-function addToCSV($filePath) {
+function addToCSV($filePath, $columnNames) {
     $parts = explode("/", $filePath);
     $fileName = array_pop($parts);
     $file = fopen($filePath, "r");
-    $row = 1;
-
-    // deal with if file is empty and there is no need to add file name
-    
-    if( ($data = fgetcsv($file) ) !== FALSE ) {
+    // check regex instead of parts?
+    if( ($data = fgetcsv($file) ) !== FALSE && !($empty = empty($data) || (count($data) === 1 && empty($data[0])))) {
+        print_r(count($data));
         array_push($data, "filename");
         fputcsv(STDOUT, $data);
     }
-    while(! feof($file)) {
-        $content = fgetcsv($file);
-        echo (gettype($content));
+    while((($content = fgetcsv($file) ) !== FALSE)) {   
+        // print_r(gettype($content) . "\n");
         array_push($content, $fileName);
-        echo (gettype($content));
-        // fputcsv(STDOUT, $content);
+        fputcsv(STDOUT, $content);
     }
     fclose($file);
 
 
 }
+
+// function getColumnNames($filePath) {
+//     if( ($data = fgetcsv($file) ) !== FALSE && !($empty = empty($data) || (count($data) === 1 && empty($data[0])))) {
+//         print_r(count($data));
+//         array_push($data, "filename");
+      
+// }
 
 /*
 
@@ -45,11 +54,12 @@ function addToCSV($filePath) {
 
  things to think about
     // test cases
-        1. no file
-        2. 1 file
-        3. multiple files
-        4. file does not exist 
-        5. how to deal with files with different columns?
+        1. no file :)
+        2. 1 file :)
+        3. blank file :)
+        4. file does not exist :)
+        5. multiple files
+        6. how to deal with files with different columns?
 
 */
 // $output = "hello World";
