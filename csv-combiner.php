@@ -1,16 +1,15 @@
 <?php
 if (isset($argc)) {
 	for ($i = 1; $i < $argc; $i++) {
-        $columnNames;
         if (file_exists($argv[$i])) {
-            $columnNames = array_unique(getColumnNames($argv[$i]), $columnNames);
+            addToCSV($argv[$i]);
         }
 	}
 
     // for ($i = 1; $i < $argc; $i++) {
-    //     $columnNames;
+   //     $columnNames;
     //     if (file_exists($argv[$i])) {
-    //         $columnNames = getColumnNames()
+    //         $columnNames = array_unique(getColumnNames($argv[$i]), $columnNames);
     //     }
 	// }
 }
@@ -18,7 +17,7 @@ else {
 	echo "argc and argv disabled\n";
 } 
 
-function addToCSV($filePath, $columnNames) {
+function addToCSV($filePath) {
     $parts = explode("/", $filePath);
     $fileName = array_pop($parts);
     $file = fopen($filePath, "r");
