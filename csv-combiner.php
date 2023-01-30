@@ -57,23 +57,4 @@ function getColumnNames($filePath) {
     fclose($file);
     return null;
 }
-
-/*
-
-// assumptions
-// 1. files are given as proper .csv file type
-// 2. columns are formatted properly with 1 value per column title
-
-
- things to think about
-    // test cases
-        1. no file :)
-        2. 1 file :)
-        3. blank file :)
-        4. file does not exist :)
-        5. multiple files :)
-        6. how to deal with files with different columns? :)
-
-*/
-
 ?>
