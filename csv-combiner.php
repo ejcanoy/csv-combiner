@@ -17,33 +17,32 @@ if (isset($argc)) {
             }
          }
      }
-    //  print_r (array_flip($columnNames));
     array_push($columnNames, 'filename');
-    print_r($columnNames);
-    print_r($curFileColNames);
-    // fputcsv(STDOUT, $columnNames);
-    // for ($i = 1; $i < $argc; $i++) {
-    //     if (file_exists($argv[$i])) {
-    //         addToCSV($argv[$i], $columnNames, curFileColNames);
-    //     }
-	// }
+    fputcsv(STDOUT, $columnNames);
+    $columnNames = array_flip($columnNames);
+    for ($i = 1; $i < $argc; $i++) {
+        if (file_exists($argv[$i])) {
+            addToCSV($argv[$i], $columnNames, $curFileColNames);
+        }
+	}
 }
 else {
 	echo "argc and argv disabled\n";
 } 
 
-function addToCSV($filePath, $columnNames) {
-    $parts = explode("/", $filePath);
-    $fileName = array_pop($parts);
+function addToCSV($filePath, $columnNames, $curFileColNames) {
+    $fileName = basename($filePath);
     $file = fopen($filePath, "r");
-    // check regex instead of parts?
     if( ($data = fgetcsv($file) ) !== FALSE && !($empty = empty($data) || (count($data) === 1 && empty($data[0])))) {
-  
+        
     }
     while((($content = fgetcsv($file) ) !== FALSE)) {   
-        // print_r(gettype($content) . "\n");
-        array_push($content, $fileName);
-        fputcsv(STDOUT, $content);
+        $output = array_fill(0, sizeof($columnNames), " ");
+        for ($i = 0; $i < sizeOf($content); $i++) {
+            $output[$columnNames[$curFileColNames[$filePath][$i]]] =  $content[$i];
+        }
+        $output[sizeof($columnNames) - 1] = $fileName;
+        fputcsv(STDOUT, $output);
     }
     fclose($file);
 
@@ -72,14 +71,9 @@ function getColumnNames($filePath) {
         2. 1 file :)
         3. blank file :)
         4. file does not exist :)
-        5. multiple files
-        6. how to deal with files with different columns?
+        5. multiple files :)
+        6. how to deal with files with different columns? :)
 
 */
-// $output = "hello World";
-// fwrite(STDOUT, $output);
 
-// $input = fgets(STDIN);
-
-// fwrite(STDOUT, $output);
 ?>
