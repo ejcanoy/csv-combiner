@@ -33,13 +33,11 @@ else {
 function addToCSV($filePath, $columnNames, $curFileColNames) {
     $fileName = basename($filePath);
     $file = fopen($filePath, "r");
-    if( ($data = fgetcsv($file) ) !== FALSE && !($empty = empty($data) || (count($data) === 1 && empty($data[0])))) {
-        
-    }
+    $firstLine = fgetcsv($file); // gets first line of file to move pointer
     while((($content = fgetcsv($file) ) !== FALSE)) {   
         $output = array_fill(0, sizeof($columnNames), " ");
         for ($i = 0; $i < sizeOf($content); $i++) {
-            $output[$columnNames[$curFileColNames[$filePath][$i]]] =  $content[$i];
+            $output[$columnNames[$curFileColNames[$filePath][$i]]] =  $content[$i]; // stores value in correct column index
         }
         $output[sizeof($columnNames) - 1] = $fileName;
         fputcsv(STDOUT, $output);
